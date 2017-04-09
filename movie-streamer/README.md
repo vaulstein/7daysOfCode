@@ -15,7 +15,10 @@ The script requires following dependencies and downloads them automatically.
 3. Peerflix
 
 
-    cd movie-streamer
+
+    git clone https://github.com/vaulstein/7daysOfCode.git
+    
+    cd 7daysOfCode/movie-streamer
     
     python setup.py install
     
