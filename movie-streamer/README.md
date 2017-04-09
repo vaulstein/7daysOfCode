@@ -17,8 +17,8 @@ The script requires following dependencies and downloads them automatically.
 
     cd movie-streamer
     
-    pip install -r requirements.txt
+    python setup.py install
     
 ## RUN
 
-    python movie-streamer/bin/mstream.py <movie-name>
+    mstream <movie-name>
