@@ -1,0 +1,235 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import six
+from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup
+
+DEBUG = False
+
+def decoding_strings(f):
+    def wrapper(*args, **kwargs):
+        out = f(*args, **kwargs)
+        if isinstance(out, six.string_types) and not six.PY3:
+            # todo: make encoding configurable?
+            if six.PY3:
+                return out
+            else:
+                return out.decode(sys.stdin.encoding)
+        return out
+
+    return wrapper
+
+
+def _input_compat(prompt):
+    if six.PY3:
+        r = input(prompt)
+    else:
+        r = raw_input(prompt)
+    return r
+
+
+if six.PY3:
+    str_compat = str
+else:
+    str_compat = unicode
+
+dateObject = 'YYYY-MM-DD'
+
+
+@decoding_strings
+def ask(question, answer=str_compat, default=None, l=None, options=None):
+    if answer == str_compat:
+        r = ''
+        while True:
+            if default:
+                r = _input_compat('> {0} [{1}] '.format(question, default))
+            else:
+                r = _input_compat('> {0} '.format(question, default))
+
+            r = r.strip()
+
+            if len(r) <= 0:
+                if default:
+                    r = default
+                    break
+                else:
+                    print('You must enter something')
+            else:
+                if l and len(r) != l:
+                    print('You must enter a {0} letters long string'.format(l))
+                else:
+                    break
+
+        return r
+
+    elif answer == bool:
+        r = None
+        while True:
+            if default is True:
+                r = _input_compat('> {0} (Y/n) '.format(question))
+            elif default is False:
+                r = _input_compat('> {0} (y/N) '.format(question))
+            else:
+                r = _input_compat('> {0} (y/n) '.format(question))
+
+            r = r.strip().lower()
+
+            if r in ('y', 'yes'):
+                r = True
+                break
+            elif r in ('n', 'no'):
+                r = False
+                break
+            elif not r:
+                r = default
+                break
+            else:
+                print("You must answer 'yes' or 'no'")
+        return r
+    elif answer == int:
+        r = None
+        while True:
+            if default:
+                r = _input_compat('> {0} [{1}] '.format(question, default))
+            else:
+                r = _input_compat('> {0} '.format(question))
+
+            r = r.strip()
+
+            if not r:
+                r = default
+                break
+
+            try:
+                r = int(r)
+                break
+            except:
+                print('You must enter an integer')
+        return r
+    elif answer == list:
+        # For checking multiple options
+        r = None
+        while True:
+            if default:
+                r = _input_compat('> {0} [{1}] '.format(question, default))
+            else:
+                r = _input_compat('> {0} '.format(question))
+
+            r = r.strip()
+
+            if not r:
+                r = default
+                break
+
+            try:
+                if int(r) in range(1, len(options) + 1):
+                    break
+                else:
+                    print('Please select valid option: ' + ' or '.join('{}'.format(s) for _, s in enumerate(options)))
+            except:
+                print('Please select valid option: ' + ' or '.join('{}'.format(s) for _, s in enumerate(options)))
+        return r
+    if answer == dateObject:
+        r = ''
+        while True:
+            if default:
+                r = _input_compat('> {0} [{1}] '.format(question, default))
+            else:
+                r = _input_compat('> {0} '.format(question, default))
+
+            r = r.strip()
+
+            if not r:
+                r = default
+                break
+
+            try:
+                datetime.datetime.strptime(r, '%Y-%m-%d')
+                break
+            except ValueError:
+                print("Incorrect data format, should be YYYY-MM-DD")
+
+        return r
+
+    else:
+        raise NotImplemented(
+            'Argument `answer` must be str_compat, bool, or integer')
+
+
+
+def test_system():
+    """Runs few tests to check if npm and peerflix is installed on the system."""
+    if os.system('npm --version') != 0:
+        print 'NPM not installed installed, please read the Readme file for more information.'
+        exit()
+    if os.system('peerflix --version') != 0:
+        print 'Peerflix not installed, installing..'
+        os.system('npm install -g peerflix')
+
+
+def get_input():
+    """Gets the input from user and formats it."""
+    try:
+        query = ' '.join(sys.argv[1:])
+        movie_name = ' '.join(query.split()[0:])
+        return movie_name
+    except Exception as e:
+        print e
+        exit()
+    return query
+
+
+def fetch_movie_names(movie_soup):
+    movie_links = {}
+    counter = 1
+    movie_page = movie_soup.find_all("tr")
+
+    for each in movie_page:
+        all_links = each.find_all("a")
+        title = None
+        for each_link in all_links:
+            if not title and each_link.get('title'):
+                title = each_link.get('title')
+                movie_links[counter] = {'title': title}
+            if 'magnet:' in each_link.get('href'):
+                movie_links[counter]['href'] = each_link.get('href')
+        if title:
+            counter += 1
+        if counter > 20:
+            break
+    return movie_links
+
+
+def get_magnet_link(movie_name = 'harry potter'):
+
+    URL = 'https://www.skytorrents.in/search/all/ed/1/?q='+movie_name.replace(' ', '+')
+
+    resp = requests.get(URL)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    movie_list = fetch_movie_names(soup)
+    print("Below are the Movies:")
+    for index, movie in movie_list.items():
+        print('%s: %s' % (index, movie['title']))
+    selected_index = ask('Select one number from the above list',
+                         answer=list, default='1', options=range(1, 21))
+    return movie_list[int(selected_index)]['href']
+
+
+
+def main():
+    test_system()
+    movie = get_input()
+    try:
+        print ('Streaming Torrent')
+        command = 'peerflix "'+get_magnet_link(movie)+'" --vlc'
+        os.system(command)
+    except Exception as e:
+        print e
+        exit()
+
+if __name__ == '__main__':
+    main()
