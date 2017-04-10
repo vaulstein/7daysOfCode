@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name="mstream",
-	  version="0.1",
+	  version="0.2",
 	  description="Instantly stream movies/ tv episodes you want to watch",
 	  url="http://vaulstein.github.com",
 	  author="Vaulstein Rodrigues",
