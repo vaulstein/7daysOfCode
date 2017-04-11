@@ -1,4 +1,4 @@
-# AskQuora
+# AskStackOverFlow
 
 Stackoverflow Q&amp;A right from the command line!
 
