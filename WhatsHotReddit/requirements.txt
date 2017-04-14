@@ -1,0 +1,3 @@
+pkg-resources==0.0.0
+praw==4.4.0
+prawcore==0.8.0
