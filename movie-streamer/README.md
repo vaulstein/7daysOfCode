@@ -14,6 +14,14 @@ The script requires following dependencies and downloads them automatically.
 2. Beautiful Soup
 3. Peerflix
 
+Install using pip globally:
+
+```
+$ sudo pip install mstream
+
+```
+
+Or build from Source:
 
 ```
 $ git clone https://github.com/vaulstein/7daysOfCode.git

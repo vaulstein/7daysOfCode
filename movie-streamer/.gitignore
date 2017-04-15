@@ -8,3 +8,4 @@ src/*.egg-info
 lib
 lib64
 .idea
+bin
