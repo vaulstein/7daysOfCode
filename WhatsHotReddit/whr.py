@@ -170,21 +170,29 @@ def main():
     '''.format(v=__version__))
 
     reddit = praw.Reddit('bot1')
-    subreddit_name = ask("Enter subreddit name",
+    subreddit_name = ask("Enter subreddit name:",
                 answer=str_compat)
     subreddit = reddit.subreddit(subreddit_name)
     count_to_fetch = ask('How many post would you want to see?', answer=int, default=5)
     if count_to_fetch > 10:
         print('Cannot fetch more than 10 posts.')
         sys.exit()
+    identifiers = ask('Show Identifiers?', answer=bool, default=True)
+    if identifiers:
+        title = 'Title :: \n'
+        body = 'Body :: \n'
+        post_score = 'Score :: '
+    else:
+        title = ''
+        body = ''
+        post_score = ''
     for submission in subreddit.hot(limit=5):
         print('*'*20)
-        print(submission.title)
+        print((u'{0}' + submission.title).format(title))
         print('-'*20)
-        print(submission.selftext)
+        print((u'{0}' + submission.selftext).format(body))
         print('-'*20)
-        print(submission.score)
-        print('*'*20)
+        print(('{0}' + str(submission.score)).format(post_score))
 
 if __name__ == "__main__":
     main()
