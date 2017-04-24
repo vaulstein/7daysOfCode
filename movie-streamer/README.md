@@ -40,3 +40,9 @@ $ python setup.py install
 Select the movie you want to watch:
 
 [![mstream_.png](https://s4.postimg.org/5mpsgr5zh/mstream.png)](https://postimg.org/image/d2p22jtop/)
+
+## TODO
+
+1. Using Proxy server to scrape magnet links
+2. Provide Advance search options to search movies/TV series
+[![search.png](https://s11.postimg.org/p9flq9wk3/search.png)](https://postimg.org/image/lpto0gtu7/)
