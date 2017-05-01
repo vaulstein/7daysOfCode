@@ -13,9 +13,9 @@ The aim of the project is to encourage students to learn from code rather than b
     
 ## Example
 
-    [![college.png](https://s9.postimg.org/fwgjdb39r/college.png)](https://postimg.org/image/df4s61jd7/)
+[![college.png](https://s9.postimg.org/fwgjdb39r/college.png)](https://postimg.org/image/df4s61jd7/)
     
-    [![college2.png](https://s2.postimg.org/5xq72jdtl/college2.png)](https://postimg.org/image/s9nzvxcxh/)
+[![college2.png](https://s2.postimg.org/5xq72jdtl/college2.png)](https://postimg.org/image/s9nzvxcxh/)
     
 ## TODO
 
