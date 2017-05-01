@@ -1,0 +1,9 @@
+colorama==0.3.7
+Pillow==4.1.0
+pkg-resources==0.0.0
+python-dateutil==2.5.3
+pytz==2016.7
+requests==2.12.1
+six==1.10.0
+Unidecode==0.4.19
+update-checker==0.16

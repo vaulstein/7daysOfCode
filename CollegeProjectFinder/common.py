@@ -1,9 +1,6 @@
-import ConfigParser
 import datetime
-import os
 import sys
 
-import oauth2
 import pytz
 
 try:
